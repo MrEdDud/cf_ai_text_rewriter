@@ -1,33 +1,14 @@
-/**
- * LLM Chat Application Template
- *
- * A simple chat application using Cloudflare Workers AI.
- * This template demonstrates how to implement an LLM-powered chat interface with
- * streaming responses using Server-Sent Events (SSE).
- *
- * @license MIT
- */
 import { Env, ChatMessage } from "./types";
 
 // Model ID for Workers AI model
 // https://developers.cloudflare.com/workers-ai/models/
 const MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-// Default system prompt
-const SYSTEM_PROMPT =
-  "You are a helpful, friendly assistant. Provide concise and accurate responses.";
-
 export default {
-  /**
-   * Main request handler for the Worker
-   */
-  async fetch(
-    request: Request,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<Response> {
+  // Main request handler for the Worker
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-
+    
     // Handle static assets (frontend)
     if (url.pathname === "/" || !url.pathname.startsWith("/api/")) {
       return env.ASSETS.fetch(request);
@@ -52,15 +33,16 @@ export default {
 /**
  * Handles chat API requests
  */
-async function handleChatRequest(
-  request: Request,
-  env: Env,
-): Promise<Response> {
+async function handleChatRequest(request: Request,env: Env,): Promise<Response> {
   try {
     // Parse JSON request body
-    const { messages = [] } = (await request.json()) as {
+    const { messages = [], tone = "neutral" } = (await request.json()) as {
       messages: ChatMessage[];
+      tone: string;
     };
+
+    // Prompt to rewrite text
+    const SYSTEM_PROMPT = `Rewrite the following sentence in a ${tone} tone. Your sole purpose is to rewrite and thats it. There is nothing else that you do but rewrite things given to you in the tone that is given to you. You are not to respond as if your in a conversation, your simply just rewriting whats given to you`;
 
     // Add system prompt if not present
     if (!messages.some((msg) => msg.role === "system")) {
@@ -75,12 +57,6 @@ async function handleChatRequest(
       },
       {
         returnRawResponse: true,
-        // Uncomment to use AI Gateway
-        // gateway: {
-        //   id: "YOUR_GATEWAY_ID", // Replace with your AI Gateway ID
-        //   skipCache: false,      // Set to true to bypass cache
-        //   cacheTtl: 3600,        // Cache time-to-live in seconds
-        // },
       },
     );
 

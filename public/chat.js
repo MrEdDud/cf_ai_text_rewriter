@@ -4,6 +4,20 @@
  * Handles the chat UI interactions and communication with the backend API.
  */
 
+let selectedTone = null;
+
+function updateTone(tone) {
+    let elementId = document.getElementById(tone);
+    
+    document.querySelectorAll("ul li a").forEach(element => {
+        element.style.color = "#b21e35";
+    });
+
+    elementId.style.color = "#F3752B";
+
+    selectedTone = tone;
+}
+
 // DOM elements
 const chatMessages = document.getElementById("chat-messages");
 const userInput = document.getElementById("user-input");
@@ -19,12 +33,6 @@ let chatHistory = [
   },
 ];
 let isProcessing = false;
-
-// Auto-resize textarea as user types
-userInput.addEventListener("input", function () {
-  this.style.height = "auto";
-  this.style.height = this.scrollHeight + "px";
-});
 
 // Send message on Enter (without Shift)
 userInput.addEventListener("keydown", function (e) {
@@ -42,9 +50,29 @@ sendButton.addEventListener("click", sendMessage);
  */
 async function sendMessage() {
   const message = userInput.value.trim();
+  const tone = selectedTone; // Sending the tone
+  const errorMessage = document.getElementById("typing-indicator");
 
   // Don't send empty messages
-  if (message === "" || isProcessing) return;
+  if (message === "" || isProcessing) {
+    errorMessage.innerHTML = "Enter a prompt!";
+    
+    return
+  };
+  if (!tone) {
+    // For every single tone, flash it for half a second if one hasnt been selected
+    document.querySelectorAll("ul li a").forEach(element => {
+      element.classList.add("flash-error");
+      setTimeout(() => element.classList.remove("flash-error"), 1000);
+    });
+    
+    // Error message when you dont click a tone
+    errorMessage.innerHTML = "Enter a tone!";
+
+    return
+  }; // Dont send empty tones
+
+  errorMessage.innerHTML = "";
 
   // Disable input while processing
   isProcessing = true;
@@ -56,7 +84,6 @@ async function sendMessage() {
 
   // Clear input
   userInput.value = "";
-  userInput.style.height = "auto";
 
   // Show typing indicator
   typingIndicator.classList.add("visible");
@@ -71,9 +98,6 @@ async function sendMessage() {
     assistantMessageEl.innerHTML = "<p></p>";
     chatMessages.appendChild(assistantMessageEl);
 
-    // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
     // Send request to API
     const response = await fetch("/api/chat", {
       method: "POST",
@@ -82,6 +106,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         messages: chatHistory,
+        tone: tone, // Sending the tone of the message to the backend
       }),
     });
 

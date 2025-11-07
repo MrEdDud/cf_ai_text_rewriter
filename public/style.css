@@ -1,0 +1,120 @@
+body {
+    color: #f2e9e4;
+    font-weight: bold;
+    font-family: "Stack Sans Headline", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+}
+
+.title-text {
+    font-size: 2vw;
+    padding: 1.6vw;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 15% 85%;
+    background-color: #0a0908;
+    height: 100vh;
+    padding: 0 0 0 2.5vw;
+}
+
+.main {
+    overflow-y: auto;
+    background-image: linear-gradient(to left, #393d3f, #0a0908);
+    color: #b21e35;
+}
+
+.sidebar {
+    background-color: #0a0908;
+    top:0;
+    overflow-y: auto;
+}
+
+/* Styling for the navbar */
+ul {
+    list-style-type: none;
+    padding: 2vh;
+}
+
+/* Styling for the text on navbar */
+ul li a {
+    display: block;
+    color: #b21e35;
+    padding: 2vh 0 2vh 0;
+    text-align: center;
+    text-decoration: none;
+    font-size: 2.4vh;
+    transition: 0.3s;
+}
+
+/* Text changes colour on navbar when hovered */
+ul li a:hover {
+    color: #df2935; 
+    cursor: pointer;
+}
+
+.info-text {
+    text-align: center;
+    padding: 1.6vw 2vw 0 2vw;
+    font-size: 1.6vw;
+    color: #f2e9e4;
+}
+
+.input {
+    font-family: inherit;
+    font-weight: bold;
+    width: 50%;
+}
+
+/* Styling for the login button */
+.button {
+    text-align: center;
+    text-decoration: none;
+    width: 1.75%;
+    transition: 0.3s;
+}
+
+/* Login button changes colour when hovered */
+.button:hover {
+    background-color: #1e1d1c;
+    cursor: pointer;
+}
+
+.input, .button {
+    background-color: #393d3f;
+    border: 0.7vh solid #b21e35;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 2.4vh;
+    color: #f2e9e4;
+    padding: 2vh;
+}
+
+.input-area {
+    text-align: center;
+    margin-top: 70vh;
+    margin-bottom: 5vh;
+    position: static;
+}
+
+.chat-messages {
+    color: #f2e9e4;
+    padding: 0 1.6vw 0 1.6vw;
+}
+
+.flash-error {
+    animation: flash 1s ease-in-out;
+}
+
+@keyframes flash {
+    from {color: #F3752B}
+    to {color: #b21e35;}
+}
+
+#typing-indicator {
+    font-size: 2vw;
+    color: #F3752B;
+}
